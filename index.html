@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="agent-build.js"></script>
+<style>
+  :root { --bg:#09090b; --card:#111114; --line:rgba(255,255,255,.08); --text:#fafafa; --mute:#a1a1aa; --dim:#71717a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body::before { content: ""; position: fixed; inset: 0; pointer-events: none; background:
+    radial-gradient(600px 400px at 15% -5%, rgba(99,102,241,.22), transparent 60%),
+    radial-gradient(500px 380px at 90% 10%, rgba(236,72,153,.14), transparent 60%); }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; position: relative; }
+  a { color: inherit; text-decoration: none; }
+
+  nav { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding: 8px 8px 8px 16px; border: 1px solid var(--line);
+    border-radius: 14px; background: rgba(17,17,20,.7); backdrop-filter: blur(12px); }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.02em; margin-right: 18px; }
+  .mark { width: 24px; height: 24px; border-radius: 7px; background: conic-gradient(from 200deg, #6366f1, #ec4899, #f59e0b, #6366f1); }
+  .nl { padding: 8px 12px; border-radius: 8px; color: var(--mute); font-size: 14px; }
+  .sp { flex: 1; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; }
+  .btn.p { background: #fafafa; color: #09090b; } .btn.s { border: 1px solid var(--line); background: rgba(255,255,255,.03); }
+
+  .hero { text-align: center; padding: 96px 0 56px; }
+  .pill { display: inline-flex; gap: 8px; align-items: center; padding: 6px 12px 6px 6px; border: 1px solid var(--line); border-radius: 99px; font-size: 13px; color: var(--mute); background: rgba(255,255,255,.03); }
+  .pill b { background: linear-gradient(90deg,#6366f1,#ec4899); color: #fff; padding: 3px 8px; border-radius: 99px; font-size: 11px; }
+  h1 { font-size: clamp(44px, 7.5vw, 88px); line-height: 1; letter-spacing: -.045em; margin: 24px auto 20px; max-width: 900px; font-weight: 800; }
+  .grad { background: linear-gradient(92deg, #a5b4fc, #f0abfc 50%, #fcd34d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { color: var(--mute); font-size: 18px; line-height: 1.6; max-width: 600px; margin: 0 auto; }
+  .ctas { display: flex; gap: 12px; justify-content: center; margin-top: 32px; }
+  .note { color: var(--dim); font-size: 13px; margin-top: 16px; }
+
+  .app { border: 1px solid var(--line); border-radius: 18px; background: #0d0d10; box-shadow: 0 40px 120px rgba(99,102,241,.15); overflow: hidden; }
+  .bar { display: flex; gap: 6px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .bar i { width: 10px; height: 10px; border-radius: 50%; background: #27272a; display: block; }
+  .body { display: grid; grid-template-columns: 200px 1fr; min-height: 380px; }
+  .side { border-right: 1px solid var(--line); padding: 16px 10px; display: flex; flex-direction: column; gap: 4px; }
+  .si { padding: 8px 10px; border-radius: 8px; font-size: 13px; color: var(--mute); }
+  .si.on { background: rgba(255,255,255,.06); color: var(--text); }
+  .main { padding: 20px; display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); align-content: start; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .kpi small { color: var(--dim); font-size: 12px; display: block; } .kpi strong { font-size: 26px; letter-spacing: -.03em; display: block; margin: 6px 0 8px; }
+  .up { color: #34d399; font-size: 12px; font-weight: 600; }
+  .chart { grid-column: span 2; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .list { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .row { display: flex; align-items: center; gap: 10px; font-size: 13px; } .row span:last-child { margin-left: auto; color: var(--dim); }
+  .av { width: 26px; height: 26px; border-radius: 50%; display: inline-block; }
+  .ct { font-size: 13px; color: var(--mute); margin: 0 0 10px; }
+
+  .logos { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px; padding: 64px 12px; color: #52525b; font-weight: 700; font-size: 20px; letter-spacing: -.02em; }
+
+  .eyebrow { color: #a5b4fc; font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+  h2 { font-size: clamp(32px, 4.5vw, 48px); letter-spacing: -.035em; margin: 10px 0 36px; line-height: 1.05; max-width: 640px; }
+  .bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .f { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+  .f.wide { grid-column: span 2; }
+  .ic { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: rgba(99,102,241,.15); }
+  .f h3 { margin: 18px 0 8px; font-size: 18px; letter-spacing: -.02em; } .f p { margin: 0; color: var(--mute); font-size: 14px; line-height: 1.6; }
+
+  .quote { margin: 96px auto; max-width: 820px; text-align: center; }
+  .quote p { font-size: clamp(22px, 3vw, 30px); line-height: 1.4; letter-spacing: -.02em; }
+  .who { display: inline-flex; gap: 12px; align-items: center; margin-top: 12px; text-align: left; }
+  .who small { display: block; color: var(--dim); }
+
+  .cta { text-align: center; padding: 64px 24px; border-radius: 24px; border: 1px solid var(--line);
+    background: radial-gradient(500px 240px at 50% 0%, rgba(99,102,241,.35), transparent 70%), var(--card); }
+  .cta h2 { margin: 0 auto 14px; }
+  footer { display: flex; justify-content: space-between; color: var(--dim); font-size: 13px; padding: 40px 0 120px; }
+
+  @media (max-width: 800px) {
+    .nl { display: none; } .body { grid-template-columns: 1fr; } .side { display: none; }
+    .main, .bento { grid-template-columns: 1fr; } .chart, .f.wide { grid-column: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Everything inside <agent-build> gets built by the agents. -->
+<agent-build agents="10" speed="1.4" hud>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#"><span class="mark"></span>Lumen</a>
+      <a class="nl" href="#">Product</a><a class="nl" href="#">Agents</a><a class="nl" href="#">Pricing</a><a class="nl" href="#">Docs</a>
+      <span class="sp"></span>
+      <a class="nl" href="#">Sign in</a><a class="btn p" href="#">Get started</a>
+    </nav>
+
+    <header class="hero">
+      <span class="pill"><b>New</b>Agents 2.0 is live</span>
+      <h1>Interfaces built <span class="grad">at the speed of thought.</span></h1>
+      <p class="sub">A team of AI agents that design, wire up and ship your UI while you watch. Clean code, real components, zero hand-offs.</p>
+      <div class="ctas"><a class="btn p" href="#">Start building →</a><a class="btn s" href="#">Watch demo</a></div>
+      <p class="note">Free for 14 days · No credit card</p>
+    </header>
+
+    <div class="app">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <div class="body">
+        <aside class="side">
+          <a class="si on" href="#">Overview</a><a class="si" href="#">Deployments</a><a class="si" href="#">Agents</a><a class="si" href="#">Analytics</a><a class="si" href="#">Settings</a>
+        </aside>
+        <div class="main">
+          <div class="kpi"><small>Builds today</small><strong>1,284</strong><span class="up">↑ 12.4%</span></div>
+          <div class="kpi"><small>Avg. build time</small><strong>8.2s</strong><span class="up">↑ 31%</span></div>
+          <div class="kpi"><small>Active agents</small><strong>64</strong><span class="up">↑ 4</span></div>
+          <div class="chart">
+            <p class="ct">Throughput · last 30 days</p>
+            <svg viewBox="0 0 400 120" width="100%" height="130" preserveAspectRatio="none">
+              <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6366f1" stop-opacity=".45"/><stop offset="1" stop-color="#6366f1" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0 95 C40 80 60 90 90 70 S150 40 180 55 S240 30 270 35 S330 10 400 18 L400 120 L0 120Z" fill="url(#g)"/>
+              <path d="M0 95 C40 80 60 90 90 70 S150 40 180 55 S240 30 270 35 S330 10 400 18" fill="none" stroke="#818cf8" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="list">
+            <p class="ct">Live agents</p>
+            <div class="row"><span class="av" style="background:#6366f1"></span><span>Nova</span><span>hero</span></div>
+            <div class="row"><span class="av" style="background:#ec4899"></span><span>Atlas</span><span>navbar</span></div>
+            <div class="row"><span class="av" style="background:#f59e0b"></span><span>Iris</span><span>pricing</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="logos"><span>Northwind</span><span>Acme</span><span>Globex</span><span>Initech</span><span>Umbrella</span></div>
+
+    <section>
+      <span class="eyebrow">Features</span>
+      <h2>Everything your team needs to ship faster.</h2>
+      <div class="bento">
+        <div class="f wide"><div class="ic">⚡</div><h3>Parallel agents</h3><p>Split any page into layers and let a team of agents build them at the same time, in the right order.</p></div>
+        <div class="f"><div class="ic">🎯</div><h3>Pixel-exact</h3><p>Every layer is measured, aligned and checked against your design tokens.</p></div>
+        <div class="f"><div class="ic">🧩</div><h3>Real components</h3><p>Output is clean, typed React you can own and extend.</p></div>
+        <div class="f wide"><div class="ic">🔁</div><h3>Replay any build</h3><p>Every build is recorded. Scrub through it, see who built what, and roll back in a click.</p></div>
+      </div>
+    </section>
+
+    <div class="quote">
+      <p>“We wrapped our marketing site in Lumen and our launch video basically made itself. People kept asking how we animated it.”</p>
+      <div class="who"><span class="av" style="background:linear-gradient(135deg,#6366f1,#ec4899);width:40px;height:40px"></span><div>Sara Chen<small>Head of Design, Northwind</small></div></div>
+    </div>
+
+    <div class="cta">
+      <h2>Ready to watch your UI build itself?</h2>
+      <p class="sub">Start free. Bring your own components.</p>
+      <div class="ctas"><a class="btn p" href="#">Get started</a><a class="btn s" href="#">Talk to sales</a></div>
+    </div>
+
+    <footer><span>© 2026 Lumen Labs</span><span>Privacy · Terms · Status</span></footer>
+  </div>
+</agent-build>
+
+</body>
+</html>

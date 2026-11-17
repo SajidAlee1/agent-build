@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Fixture: tricky CSS</title>
+<style>
+  html { scroll-behavior: smooth; }
+  /* body-level grid + direct-child selectors: wrapping the body would break these */
+  body { margin: 0; display: grid; grid-template-columns: 1fr; font-family: Georgia, serif; background: #fffaf2; color: #222; }
+  body > header { position: sticky; top: 0; background: #222; color: #fff; padding: 14px 24px; z-index: 3; display: flex; gap: 20px; }
+  body > section { padding: 40px 24px; border-bottom: 1px solid #eadfcd; }
+  .carousel { display: flex; overflow: hidden; width: 600px; }
+  .slide { flex: 0 0 600px; height: 200px; display: grid; place-items: center; font-size: 28px; color: #fff; }
+  .anim { animation: spin 3s linear infinite; display: inline-block; width: 40px; height: 40px; background: tomato; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .transformed { transform: rotate(-4deg) translateX(20px); background: #ffe08a; padding: 20px; display: inline-block; }
+  .faded { opacity: 0; }
+  .offcanvas { position: fixed; top: 0; right: -400px; width: 300px; height: 100%; background: #333; color: #fff; }
+  .clip { width: 200px; height: 60px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; border: 1px solid #ccc; }
+  .rtl { direction: rtl; }
+  svg { display: block; }
+</style></head>
+<body>
+  <header><b>The Daily Fixture</b><a href="#" style="color:#fff">World</a><a href="#" style="color:#fff">Tech</a></header>
+  <section>
+    <h1>Headline with <em>inline</em> <strong>formatting</strong> and a <a href="#">link</a> inside.</h1>
+    <p>Paragraph with mixed <code>code</code>, <mark>highlight</mark>, and a footnote<sup>1</sup>. Long enough to wrap onto multiple lines in a normal browser window so the text range is not a single line of text at all.</p>
+    <div class="transformed">Rotated note card</div> <span class="anim"></span>
+    <p class="faded">This is invisible on purpose (opacity 0) and must stay invisible.</p>
+  </section>
+  <section>
+    <h2>Carousel (only first slide visible)</h2>
+    <div class="carousel"><div class="slide" style="background:#e76f51">Slide 1</div><div class="slide" style="background:#2a9d8f">Slide 2</div><div class="slide" style="background:#264653">Slide 3</div></div>
+  </section>
+  <section>
+    <h2>Form</h2>
+    <form><label>Name <input value="Ali"></label> <label>Plan <select><option>Pro</option></select></label><br><br><textarea rows="3" cols="40">Hello</textarea><br><button>Submit</button></form>
+    <div class="clip">This text is clipped with an ellipsis because it is too long</div>
+    <p class="rtl">هذا نص عربي من اليمين إلى اليسار</p>
+    <svg width="220" height="60"><rect width="220" height="60" rx="10" fill="#6366f1"/><text x="20" y="38" fill="#fff" font-size="20">SVG badge</text></svg>
+    <img alt="placeholder" width="200" height="120" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='120'%3E%3Crect width='200' height='120' fill='%23f4a261'/%3E%3C/svg%3E">
+  </section>
+  <section><h2>Table</h2><table border="1" cellpadding="8"><tr><th>A</th><th>B</th></tr><tr><td>1</td><td>2</td></tr><tr><td>3</td><td>4</td></tr></table></section>
+  <div class="offcanvas">Off-canvas menu (should never be built)</div>
+</body></html>

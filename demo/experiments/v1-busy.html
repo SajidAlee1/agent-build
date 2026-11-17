@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agents Build</title>
+<style>
+  :root { --bg:#0c0d0f; --panel:#141518; --line:#25262b; --text:#ececec; --mute:#8b8d93; --blue:#3d7bff; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  nav { display: flex; align-items: center; gap: 28px; padding: 22px 0; }
+  .logo { font-weight: 700; display: inline-flex; gap: 8px; align-items: center; }
+  .logo i { width: 22px; height: 22px; background: #fff; border-radius: 5px; display: inline-block; }
+  nav a { color: #cfd0d4; text-decoration: none; font-size: 14px; display: inline-block; }
+  nav .sp { flex: 1; }
+  .btn { display: inline-block; padding: 10px 18px; border-radius: 6px; font-size: 14px; text-decoration: none; }
+  .btn.w { background: #fff; color: #000; } .btn.g { border: 1px solid var(--line); color: var(--text); }
+  .hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; padding: 70px 0 50px; align-items: center; }
+  .eyebrow { font: 12px ui-monospace, monospace; letter-spacing: .12em; color: var(--mute); display: inline-block; }
+  h1 { font-size: clamp(44px, 7vw, 84px); line-height: .98; margin: 18px 0; letter-spacing: -.04em; }
+  h1 span { color: #9a9ca3; }
+  .lead { color: #b9bbc1; font-size: 17px; line-height: 1.55; max-width: 520px; }
+  .ctas { display: flex; gap: 12px; margin-top: 26px; }
+  .art { aspect-ratio: 1; border-radius: 18px; background:
+      radial-gradient(circle at 35% 35%, #ffb84d 0 9%, transparent 10%),
+      radial-gradient(circle at 65% 62%, #ffcf6b 0 7%, transparent 8%),
+      radial-gradient(circle at 50% 50%, #2f6bff 0 30%, transparent 31%),
+      radial-gradient(circle at 50% 50%, #0f1c3d, #0c0d0f 70%); border: 1px solid var(--line); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .stat { padding: 26px 0; } .stat small { display: block; font: 11px ui-monospace, monospace; color: var(--mute); letter-spacing: .1em; }
+  .stat b { display: block; font-size: 34px; margin-top: 6px; }
+  section { padding: 80px 0 20px; }
+  h2 { font-size: 40px; letter-spacing: -.03em; margin: 10px 0 30px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 22px; }
+  .card h3 { margin: 12px 0 8px; font-size: 19px; } .card p { color: var(--mute); margin: 0; line-height: 1.5; font-size: 14px; }
+  .tag { display: inline-block; font: 11px ui-monospace, monospace; color: #ffb84d; letter-spacing: .1em; }
+  .proj { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .shot { height: 180px; border-radius: 8px; margin-top: 16px; background: linear-gradient(135deg, #1b2d5c, #101114); border: 1px solid var(--line); }
+  .chips { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .chip { font: 11px ui-monospace, monospace; padding: 4px 8px; border: 1px solid var(--line); border-radius: 99px; color: #c9cad0; display: inline-block; }
+  .contact { display: grid; grid-template-columns: 1.4fr 1fr; gap: 30px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 40px; }
+  .contact input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font: inherit; }
+  footer { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 20px; padding: 60px 0 120px; color: var(--mute); font-size: 14px; }
+  footer b { color: var(--text); display: block; margin-bottom: 10px; } footer p { margin: 6px 0; }
+  @media (max-width: 760px) { .hero, .grid, .proj, .contact, footer { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(2, 1fr); } nav a:not(.logo):not(.btn) { display: none; } }
+
+  /* build states */
+  .L.pending { clip-path: inset(0 100% 0 0); }
+  .scr { color: var(--blue); } .ghost { color: transparent; }
+
+  #fx { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+  .hud { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 60; display: flex; gap: 8px; align-items: center;
+    background: #16171a; border: 1px solid #2a2b30; border-radius: 999px; padding: 6px 8px 6px 14px; font: 12px ui-monospace, monospace; color: #ddd; white-space: nowrap; }
+  .hud .dots { display: inline-flex; gap: 3px; } .hud .dots i { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .hud button { background: #24252a; color: #ddd; border: 0; border-radius: 999px; padding: 5px 10px; font: inherit; cursor: pointer; }
+  .hud button.on { background: var(--blue); color: #fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <span class="logo L"><i></i>Lumen Studio</span>
+    <a class="L" href="#">Practice</a><a class="L" href="#">Work</a><a class="L" href="#">Clients</a><a class="L" href="#">About</a><a class="L" href="#">Blog</a>
+    <span class="sp"></span>
+    <a class="btn g L" href="#">GitHub ↗</a>
+  </nav>
+
+  <div class="hero">
+    <div>
+      <span class="eyebrow L">● INDEPENDENT ENGINEERING STUDIO / EST. 2019</span>
+      <h1 class="L">Systems that hold up.</h1>
+      <p class="lead L">We design and build the technical foundations behind useful software: architecture, backend systems, cloud infrastructure, data flows, and AI systems that can be understood and operated.</p>
+      <div class="ctas"><a class="btn w L" href="#">See our work</a><a class="btn g L" href="#">Start a conversation</a></div>
+    </div>
+    <div class="art L"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat L"><small>FOUNDED</small><b>2019</b></div>
+    <div class="stat L"><small>LIVE PRODUCTS</small><b>02</b></div>
+    <div class="stat L"><small>OPEN SOURCE</small><b>07</b></div>
+    <div class="stat L"><small>CLINICAL SYSTEMS</small><b>01</b></div>
+  </div>
+
+  <section>
+    <span class="eyebrow L">01 · PRACTICE</span>
+    <h2 class="L">What we build.</h2>
+    <div class="grid">
+      <div class="card L"><span class="tag L">ARCHITECTURE</span><h3 class="L">Software architecture</h3><p class="L">Clear domains, dependable interfaces, and systems designed for change.</p></div>
+      <div class="card L"><span class="tag L">INFRASTRUCTURE</span><h3 class="L">Cloud &amp; delivery</h3><p class="L">Pipelines, environments and observability that keep shipping boring.</p></div>
+      <div class="card L"><span class="tag L">INTELLIGENCE</span><h3 class="L">Data &amp; AI systems</h3><p class="L">Data flows and model integrations that can be traced and trusted.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow L">02 · PRODUCTS AND PUBLIC WORK</span>
+    <h2 class="L">Proof lives in what we run.</h2>
+    <div class="proj">
+      <div class="card L"><span class="tag L">LOGISTICS</span><h3 class="L">ShipRadar</h3><p class="L">Real-time shipment tracking with predictive delay alerts.</p><div class="shot L"></div><div class="chips"><span class="chip L">Go</span><span class="chip L">Postgres</span><span class="chip L">Kafka</span></div></div>
+      <div class="card L"><span class="tag L">CLINICAL SOFTWARE</span><h3 class="L">Clinical UI Kit</h3><p class="L">Accessible components for difficult clinical workflows.</p><div class="shot L"></div><div class="chips"><span class="chip L">React</span><span class="chip L">TypeScript</span><span class="chip L">a11y</span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="contact L">
+      <div><span class="tag L">CONTACT</span><h2 class="L">Have a difficult system to think through?</h2><p class="lead L">Talk to us about architecture, infrastructure, or the next useful thing to build.</p></div>
+      <div><input class="L" placeholder="you@company.com"><div class="ctas"><a class="btn w L" href="#">Send</a><a class="btn g L" href="#">Follow on GitHub</a></div></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="L"><b>Lumen Studio</b>An independent engineering studio for software systems, cloud infrastructure and technical products.</div>
+    <div class="L"><b>Work</b><p>ShipRadar</p><p>Clinical UI Kit</p></div>
+    <div class="L"><b>Studio</b><p>About</p><p>Blog</p></div>
+    <div class="L"><b>Contact</b><p>hello@lumen.studio</p><p>GitHub</p></div>
+  </footer>
+</div>
+
+<canvas id="fx"></canvas>
+<div class="hud">
+  <span class="dots" id="dots"></span><span id="stat"></span>
+  <button id="rebuild">Rebuild</button><button id="follow" class="on">Follow</button><button id="names" class="on">Names</button>
+</div>
+
+<script>
+(() => {
+  const AGENTS = 80, MAX_TASKS = 16;
+  const COLORS = ['#ff4fa3', '#34d8ff', '#ffd23f', '#5cff8a', '#ff8a3d', '#b07cff', '#4d7cff', '#ff5555', '#2ee6c5', '#f5f5f5'];
+  const NAMES = ['Nova','Atlas','Echo','Pixel','Vega','Orbit','Nyx','Juno','Kite','Rune','Flux','Bolt','Sage','Iris','Zed','Onyx',
+    'Lumen','Quill','Byte','Dash','Ember','Frost','Glyph','Halo','Ion','Jet','Koda','Lyra','Mako','Nimbus','Opal','Pike',
+    'Quark','Rho','Sol','Tidal','Umbra','Volt','Wren','Xeno','Yuki','Zinc','Arc','Blaze','Cove','Drift','Edge','Fern',
+    'Grit','Hex','Indy','Jinx','Kilo','Loop','Mint','Neon','Oak','Pulse','Quest','Rex','Spark','Trace','Unit','Vex',
+    'Wisp','Axel','Bram','Cleo','Dex','Elio','Faye','Gus','Hugo','Ivy','Jax','Kai','Leo','Mira','Nico','Otto'];
+  const GL = '!<>-_\\/[]{}=+*^?#01';
+  const BLUE = '#3d7bff', REST = -1.98; // REST = angle at which the arrow looks like a normal cursor
+
+  const cv = document.getElementById('fx'), ctx = cv.getContext('2d');
+  let W, H, dpr;
+  const resize = () => { dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px'; };
+  addEventListener('resize', resize); resize();
+
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const ease = t => 1 - Math.pow(1 - clamp(t, 0, 1), 3);
+  const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+  // ---------- layers ----------
+  const layers = [...document.querySelectorAll('.L')].map(el => ({
+    el, state: 'pending', parent: null,
+    isText: el.childElementCount === 0 && el.textContent.trim().length > 0,
+    text: el.textContent,
+    label: el.tagName.toLowerCase() + (el.classList[0] && el.classList[0] !== 'L' ? '.' + el.classList[0] : ''),
+  }));
+  const byEl = new Map(layers.map(l => [l.el, l]));
+  layers.forEach(l => { const p = l.el.parentElement.closest('.L'); l.parent = p ? byEl.get(p) : null; });
+
+  const rectOf = el => { const r = el.getBoundingClientRect(); return { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height }; };
+  function renderText(l, p) {
+    const t = l.text, n = t.length, k = Math.floor(p * n);
+    let s = ''; for (let j = k; j < Math.min(n, k + 3); j++) s += t[j] === ' ' ? ' ' : GL[(Math.random() * GL.length) | 0];
+    l.el.innerHTML = esc(t.slice(0, k)) + '<span class="scr">' + esc(s) + '</span><span class="ghost">' + esc(t.slice(k + s.length)) + '</span>';
+  }
+
+  // ---------- agents ----------
+  const agents = NAMES.slice(0, AGENTS).map((name, i) => ({
+    name, color: COLORS[i % COLORS.length], x: 0, y: 0, vx: 0, vy: 0, ang: 0, hist: [], task: null, wx: 0, wy: 0,
+  }));
+  function wander(a) {
+    const idle = agents.filter(b => b !== a && !b.task);
+    if (idle.length && Math.random() < 0.5) { const b = idle[(Math.random() * idle.length) | 0]; a.wx = b.wx + rand(-40, 40); a.wy = b.wy + rand(-30, 30); }
+    else { a.wx = rand(30, W - 30); a.wy = scrollY + rand(40, H - 80); }
+  }
+
+  let tasks = [], fading = [], startT = 0, doneT = 0, follow = true, showNames = true;
+  const mouse = { x: -1e4, y: -1e4 };
+
+  function rebuild() {
+    tasks = []; fading = []; doneT = 0;
+    layers.forEach(l => { l.state = 'pending'; if (l.isText) l.el.textContent = l.text; l.el.style.clipPath = ''; l.el.classList.add('pending'); });
+    scrollTo(0, 0);
+    agents.forEach(a => {
+      a.task = null; const ang = rand(0, Math.PI * 2), s = rand(4, 12);
+      a.x = W / 2 + rand(-15, 15); a.y = H / 2 + rand(-15, 15); a.vx = Math.cos(ang) * s; a.vy = Math.sin(ang) * s; a.ang = ang; a.hist = [];
+      wander(a);
+    });
+    startT = performance.now() + 700; // let the burst play first
+  }
+
+  function startTask(l, now) {
+    const r = rectOf(l.el);
+    if (r.w < 1 || r.h < 1) { finish(l); return; }
+    const idle = agents.filter(a => !a.task).sort((a, b) => Math.hypot(a.x - r.x, a.y - r.y) - Math.hypot(b.x - r.x, b.y - r.y));
+    if (!idle.length) return false;
+    const t = { l, r, phase: 'approach', t0: now, lead: idle[0], helpers: idle.slice(1, 1 + ((Math.random() * 3) | 0)), mx: 0, my: 0 };
+    [t.lead, ...t.helpers].forEach(a => a.task = t);
+    l.state = 'active'; tasks.push(t);
+  }
+  function finish(l) { l.state = 'done'; l.el.classList.remove('pending'); l.el.style.clipPath = ''; if (l.isText) l.el.textContent = l.text; }
+
+  function updateTasks(now) {
+    if (now < startT) return;
+    if (tasks.length < MAX_TASKS) {
+      for (const l of layers) {
+        if (tasks.length >= MAX_TASKS) break;
+        if (l.state === 'pending' && (!l.parent || l.parent.state === 'done')) if (startTask(l, now) === false) break;
+      }
+    }
+    for (const t of tasks) {
+      const r = t.r = rectOf(t.l.el), el = now - t.t0;
+      const corners = [[r.x + r.w, r.y], [r.x, r.y + r.h], [r.x + r.w, r.y + r.h]];
+      if (t.phase === 'approach') {
+        t.lead.tx = r.x; t.lead.ty = r.y;
+        t.helpers.forEach((a, i) => { a.tx = corners[i][0]; a.ty = corners[i][1]; });
+        if (Math.hypot(t.lead.x - r.x, t.lead.y - r.y) < 8 || el > 2500) { t.phase = 'draw'; t.t0 = now; t.dur = 300 + Math.min(r.w, 700) * 0.5; }
+      } else if (t.phase === 'draw') {
+        const p = ease(el / t.dur); t.mx = r.w * p; t.my = r.h * p;
+        t.lead.tx = r.x + t.mx; t.lead.ty = r.y + t.my;
+        if (el >= t.dur) {
+          t.phase = 'fill'; t.t0 = now; t.dur = t.l.isText ? clamp(t.l.text.length * 20, 300, 1500) : 550;
+          t.l.el.classList.remove('pending'); if (!t.l.isText) t.l.el.style.clipPath = 'inset(0 100% 0 0)';
+        }
+      } else if (t.phase === 'fill') {
+        const p = clamp(el / t.dur, 0, 1);
+        if (t.l.isText) renderText(t.l, p); else t.l.el.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0)`;
+        t.lead.tx = r.x + r.w * p; t.lead.ty = r.y + r.h * 0.5 + Math.sin(now / 90) * 2;
+        t.helpers.forEach((a, i) => { a.tx = corners[i][0] + Math.sin(now / 150 + i) * 5; a.ty = corners[i][1] + Math.cos(now / 170 + i) * 4; });
+        if (p >= 1) {
+          finish(t.l); t.done = true; fading.push({ r, t0: now, label: t.l.label, color: t.lead.color });
+          [t.lead, ...t.helpers].forEach(a => { a.task = null; wander(a); });
+        }
+      }
+    }
+    tasks = tasks.filter(t => !t.done);
+    fading = fading.filter(f => now - f.t0 < 450);
+    if (!doneT && layers.every(l => l.state === 'done')) doneT = now;
+
+    // follow the build front
+    if (follow && tasks.length) {
+      const top = Math.min(...tasks.map(t => t.r.y));
+      const want = clamp(top - H * 0.3, 0, document.documentElement.scrollHeight - H);
+      if (Math.abs(want - scrollY) > 2) scrollTo(0, scrollY + (want - scrollY) * 0.05);
+    }
+  }
+
+  function moveAgents(now) {
+    const mx = mouse.x, my = mouse.y + scrollY;
+    for (const a of agents) {
+      if (a.task) {
+        const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy) || 1, sp = Math.min(16, d * 0.18);
+        a.vx += (dx / d * sp - a.vx) * 0.35; a.vy += (dy / d * sp - a.vy) * 0.35;
+      } else {
+        // keep wanderers on screen as the page scrolls
+        if (a.wy < scrollY || a.wy > scrollY + H) wander(a);
+        const dx = a.wx - a.x, dy = a.wy - a.y, d = Math.hypot(dx, dy) || 1, sp = Math.min(4.5, d / 14);
+        a.vx += (dx / d * sp - a.vx) * 0.06; a.vy += (dy / d * sp - a.vy) * 0.06;
+        if (d < 25) wander(a);
+        const fx = a.x - mx, fy = a.y - my, f2 = fx * fx + fy * fy;
+        if (f2 < 8100) { const f = Math.sqrt(f2) || 1, k = (1 - f / 90) * 1.6; a.vx += fx / f * k; a.vy += fy / f * k; }
+        for (const b of agents) {
+          if (b === a) continue;
+          const sx = a.x - b.x, sy = a.y - b.y, s2 = sx * sx + sy * sy;
+          if (s2 < 196 && s2 > 0.01) { const s = Math.sqrt(s2), k = (14 - s) / 14 * 0.4; a.vx += sx / s * k; a.vy += sy / s * k; }
+        }
+      }
+      let sp = Math.hypot(a.vx, a.vy);
+      if (sp > 18) { a.vx *= 18 / sp; a.vy *= 18 / sp; sp = 18; }
+      a.x += a.vx; a.y += a.vy;
+      const working = a.task && a.task.phase !== 'approach';
+      const goal = working || sp < 0.6 ? REST : Math.atan2(a.vy, a.vx);
+      let df = goal - a.ang; df = Math.atan2(Math.sin(df), Math.cos(df)); a.ang += df * (working ? 0.25 : 0.18);
+      a.sp = sp;
+      a.hist.unshift({ x: a.x, y: a.y, ang: a.ang }); if (a.hist.length > 13) a.hist.pop();
+    }
+  }
+
+  // ---------- drawing ----------
+  function arrow(x, y, ang, color, alpha, s = 11) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(ang - Math.PI - 1.16); ctx.globalAlpha = alpha;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, s); ctx.lineTo(s * .28, s * .74); ctx.lineTo(s * .5, s * 1.1);
+    ctx.lineTo(s * .64, s * 1.03); ctx.lineTo(s * .43, s * .68); ctx.lineTo(s * .75, s * .68); ctx.closePath();
+    ctx.fillStyle = color; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,.65)'; ctx.stroke(); ctx.restore();
+  }
+  function pill(text, x, y, bg, fg, font = '10px ui-monospace, monospace') {
+    ctx.font = font; const w = ctx.measureText(text).width + 8;
+    ctx.fillStyle = bg; ctx.beginPath(); ctx.roundRect(x, y, w, 14, 3); ctx.fill();
+    ctx.fillStyle = fg; ctx.textBaseline = 'middle'; ctx.fillText(text, x + 4, y + 7.5);
+  }
+  function box(x, y, w, h, alpha, fillA) {
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = `rgba(61,123,255,${fillA})`; ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = BLUE; ctx.lineWidth = 1.25; ctx.strokeRect(x + .5, y + .5, w, h);
+    ctx.fillStyle = '#fff';
+    for (const [cx, cy] of [[x, y], [x + w, y], [x, y + h], [x + w, y + h]]) { ctx.fillRect(cx - 2.5, cy - 2.5, 5, 5); ctx.strokeRect(cx - 2.5, cy - 2.5, 5, 5); }
+    ctx.globalAlpha = 1;
+  }
+
+  function draw(now) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    ctx.translate(-scrollX, -scrollY);
+    // guides
+    for (const t of tasks) if (t.phase === 'draw') {
+      ctx.strokeStyle = 'rgba(61,123,255,.35)'; ctx.lineWidth = 1; ctx.beginPath();
+      ctx.moveTo(0, t.r.y + .5); ctx.lineTo(W, t.r.y + .5); ctx.moveTo(0, t.r.y + t.my + .5); ctx.lineTo(W, t.r.y + t.my + .5); ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,70,70,.55)'; ctx.beginPath(); ctx.moveTo(t.r.x + .5, scrollY); ctx.lineTo(t.r.x + .5, scrollY + H); ctx.stroke();
+    }
+    for (const f of fading) box(f.r.x, f.r.y, f.r.w, f.r.h, 1 - (now - f.t0) / 450, .04);
+    for (const t of tasks) {
+      const { r } = t;
+      if (t.phase === 'draw') box(r.x, r.y, t.mx, t.my, 1, .1);
+      if (t.phase === 'fill') box(r.x, r.y, r.w, r.h, 1, .14 * (1 - (now - t.t0) / t.dur) + .03);
+      if (t.phase !== 'approach') {
+        pill(t.l.label, r.x, r.y - 17, t.lead.color, '#000');
+        pill(`${Math.round(t.phase === 'draw' ? t.mx : r.w)} × ${Math.round(t.phase === 'draw' ? t.my : r.h)}`, r.x + (t.phase === 'draw' ? t.mx : r.w) / 2 - 30, r.y + (t.phase === 'draw' ? t.my : r.h) + 5, BLUE, '#fff');
+      }
+    }
+    // agents: trails, cursors, names
+    for (const a of agents) if (a.sp > 2) for (let i = 4; i >= 1; i--) { const h = a.hist[i * 3]; if (h) arrow(h.x, h.y, h.ang, a.color, .3 * (1 - i / 5) * Math.min(1, a.sp / 6)); }
+    for (const a of agents) arrow(a.x, a.y, a.ang, a.color, 1);
+    if (showNames) for (const a of agents) { ctx.globalAlpha = a.task ? 1 : .75; pill(a.name, a.x + 9, a.y + 11, a.color, '#000'); ctx.globalAlpha = 1; }
+  }
+
+  // ---------- HUD ----------
+  const statEl = document.getElementById('stat');
+  document.getElementById('dots').innerHTML = COLORS.slice(0, 5).map(c => `<i style="background:${c}"></i>`).join('');
+  function hud(now) {
+    const done = layers.filter(l => l.state === 'done').length;
+    if (doneT) statEl.textContent = `Built by ${AGENTS} agents in ${((doneT - startT) / 1000).toFixed(1)}s`;
+    else statEl.textContent = `${agents.filter(a => a.task).length} / ${AGENTS} agents busy · ${done} / ${layers.length} layers · ${Math.max(0, (now - startT) / 1000).toFixed(1)}s`;
+  }
+  const followBtn = document.getElementById('follow'), namesBtn = document.getElementById('names');
+  const stopFollow = () => { follow = false; followBtn.classList.remove('on'); };
+  addEventListener('wheel', stopFollow, { passive: true }); addEventListener('touchmove', stopFollow, { passive: true });
+  followBtn.onclick = () => { follow = !follow; followBtn.classList.toggle('on', follow); };
+  namesBtn.onclick = () => { showNames = !showNames; namesBtn.classList.toggle('on', showNames); };
+  document.getElementById('rebuild').onclick = () => { follow = true; followBtn.classList.add('on'); rebuild(); };
+  addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  addEventListener('pointerleave', () => { mouse.x = mouse.y = -1e4; });
+
+  rebuild();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { layers.forEach(finish); doneT = startT; draw(0); hud(0); return; }
+  (function loop(now) { updateTasks(now); moveAgents(now); draw(now); hud(now); requestAnimationFrame(loop); })(performance.now());
+})();
+</script>
+</body>
+</html>

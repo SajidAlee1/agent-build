@@ -1,0 +1,34 @@
+{
+  "name": "agent-build",
+  "version": "0.1.0",
+  "description": "A team of named cursor agents builds your website in front of you — drop-in animation for any site, React or Next.js.",
+  "license": "MIT",
+  "author": "Sajid Ali",
+  "type": "module",
+  "main": "./index.mjs",
+  "module": "./index.mjs",
+  "types": "./index.d.ts",
+  "unpkg": "./agent-build.js",
+  "jsdelivr": "./agent-build.js",
+  "exports": {
+    ".": { "types": "./index.d.ts", "import": "./index.mjs", "default": "./index.mjs" },
+    "./react": { "types": "./react.d.ts", "import": "./react.mjs", "default": "./react.mjs" },
+    "./script": "./agent-build.js",
+    "./agent-build.js": "./agent-build.js",
+    "./package.json": "./package.json"
+  },
+  "files": ["agent-build.js", "index.mjs", "index.d.ts", "react.mjs", "react.d.ts", "README.md", "LICENSE"],
+  "sideEffects": ["./agent-build.js"],
+  "peerDependencies": { "react": ">=17" },
+  "peerDependenciesMeta": { "react": { "optional": true } },
+  "scripts": {
+    "test": "node test/run.mjs test/out",
+    "test:visible": "HEADED=1 PORT=9444 node test/run.mjs test/out-visible",
+    "demo": "python3 -m http.server 8080"
+  },
+  "repository": { "type": "git", "url": "git+https://github.com/SajidAlee1/agent-build.git" },
+  "homepage": "https://sajidalee1.github.io/agent-build/",
+  "bugs": { "url": "https://github.com/SajidAlee1/agent-build/issues" },
+  "keywords": ["animation", "cursor", "agents", "ai", "page-load", "intro", "reveal", "react", "nextjs", "web-component", "multiplayer-cursors"],
+  "engines": { "node": ">=18" }
+}
